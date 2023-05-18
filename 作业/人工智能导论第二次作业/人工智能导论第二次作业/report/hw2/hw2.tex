@@ -1,0 +1,339 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=1in]{geometry} % 设置页面边距
+\usepackage{ctex}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amssymb} % 数学符号
+\usepackage{booktabs} % 绘制漂亮的表格
+\usepackage{array} % 数组和表格
+\usepackage{multirow} % 多行合并的表格
+\usepackage{caption} % 设置图片和表格的标题格式
+\usepackage{subcaption} % 多个子图或表格
+\usepackage{parskip}
+\usepackage{forest}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\setlength{\parindent}{0pt}
+
+\title{\textbf{人工智能导论第二次作业}}
+\author{张立博\ 2021012487}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\section{第一题}
+
+\subsection*{(1)}
+若只划分训练集和测试集，则无法进行有效调参。
+因为如果使用测试集进行调参，就会导致信息泄露；
+若使用训练集进行训练加调参，得到的模型可能在训练集上表现很好，但在测试集或新数据上表现很差。
+因此需要引入验证集进行参数调优。\\
+引入验证集后，
+验证集用于模型选择和参数调整，
+而测试集用于模型性能的最终评估，永远不能用来训练模型或给模型调参。
+\subsection*{(2)}
+K折交叉验证的流程如下：
+\begin{enumerate}
+    \item 将数据集分为K个子集，其中K-1个子集作为训练集，1个子集作为验证集
+    \item 在第一轮交叉验证中，使用K-1个子集进行训练，使用剩余的1个子集进行模型验证，记录模型在验证集上的性能指标
+    \item 重复步骤2，将不同的子集作为验证集，其余子集作为训练集，直到每个子集都被用作验证集一次，最终记录所有K次验证结果的平均值作为模型的性能指标
+\end{enumerate}
+\subsection*{(3)}
+L1正则化可以得到稀疏解，将权重向量中较小的权重置为0，可以自动特征选择;
+而L2得到的权重向量是密集的\\
+另一种正则化方法：Dropout正则化，在神经网络中应用的一种正则化技术，它随机地在训练过程中关闭一部分神经元，从而减少了神经元之间的依赖关系，降低了过拟合风险。
+\subsection*{(4)}
+在使用SVM处理非线性数据时一开始需要引入基函数，但往往难以确定使用哪些基函数，并且使用基函数将原始空间映射到高维空间非常耗时。
+所以需要引入核函数，其可以在不显示计算的情况下将数据从原始空间映射到高维空间，降低计算复杂度，使SVM可以更高效地处理线性不可分问题
+\subsection*{(5)}
+主要使用两种方法:\\
+1.对数据集进行随机采样(如自助法)得到不同样本，用这些样本训练决策树\\
+2.决策树生长过程中，对于每次分裂在可用的特征中随机选取k个特征进行决策
+\section{第二题}
+\subsection*{(1)}
+改进模型或者训练过程的措施
+\begin{enumerate}
+    \item 使用引入冲量的随机梯度下降方法(SGD with Momentum)\\
+          在更新参数的过程中使用冲量(历史梯度的指数滑动平均)而不是直接使用梯度
+    \item 使用学习率衰减技术(Learning Rate Decay)\\
+          初始时使用较大的学习率来快速收敛，后期逐渐减小学习率以保证训练的稳定性
+\end{enumerate}
+\subsection*{(2)}
+\begin{enumerate}
+    \item 局部连接(Local Connectivity)
+    \item 参数共享(Parameter Sharing)
+\end{enumerate}
+\subsection*{(3)}
+LeNet网络共有7层，卷积层和全连接层包含可学习的参数\\
+若不考虑偏置参数
+\subsubsection*{第一层，卷积层}
+可学习参数量 = $5\cdot 5\cdot 1\cdot6 = 150$
+\subsubsection*{第二层，池化层}
+可学习参数量 = $0$
+\subsubsection*{第三层，卷积层}
+可学习参数量 = $5\cdot 5\cdot 6\cdot16 = 2400$
+\subsubsection*{第四层，池化层}
+可学习参数量 = $0$
+\subsubsection*{第五层，全连接层}
+可学习参数量 = $5\cdot 5\cdot 16\cdot120 = 48000$
+\subsubsection*{第六层，全连接层}
+可学习参数量 = $120\cdot 84 = 10080$
+\subsubsection*{第七层，全连接层}
+可学习参数量 = $84\cdot 10 = 840$
+\subsection*{(4)}
+ResNet（Residual Neural Network）在模型架构上提出了残差连接（Residual Connections）的改进。\\
+在残差连接中，输入信号可以直接跨过一个或多个层级，与后续的层级进行相加，使得信息可以更快地传递。这样一来，即使在网络非常深的情况下，梯度可以更容易地向后传播，从而加速了模型的训练过程。
+\subsection*{(5)}
+\begin{enumerate}
+    \item 梯度裁剪(Gradient Clipping)
+    \item 层归一化(Layer Normalization)
+\end{enumerate}
+\section{第三题}
+\subsection*{(1)计算另外五个属性的信息增益}
+\subsubsection*{根蒂}
+\begin{center}
+    \begin{align*}
+         & H(D) = -(\frac{8}{17}log\frac{8}{17}+\frac{9}{17}log\frac{9}{17}) = 0.998         \\
+         & H(D_1) = -(\frac{5}{8}log\frac{5}{8}+\frac{3}{8}log\frac{3}{8}) = 0.955           \\
+         & H(D_2) = -(\frac{3}{7}log\frac{3}{7}+\frac{4}{7}log\frac{4}{7}) = 0.985           \\
+         & H(D_3) = -(\frac{0}{2}log\frac{0}{2}+\frac{2}{2}log\frac{2}{2}) = 0.000           \\
+         & IG(D) = H(D) - (\frac{8}{17}H(D_1)+\frac{7}{17}H(D_2)+\frac{2}{17}H(D_3)) = 0.143
+    \end{align*}
+\end{center}
+\subsubsection*{敲声}
+\begin{center}
+    \begin{align*}
+         & H(D) = -(\frac{8}{17}log\frac{8}{17}+\frac{9}{17}log\frac{9}{17}) = 0.998          \\
+         & H(D_1) = -(\frac{6}{10}log\frac{6}{10}+\frac{4}{10}log\frac{4}{10}) = 0.971        \\
+         & H(D_2) = -(\frac{2}{5}log\frac{2}{5}+\frac{3}{5}log\frac{3}{5}) = 0.971            \\
+         & H(D_3) = -(\frac{0}{2}log\frac{0}{2}+\frac{2}{2}log\frac{2}{2}) = 0.000            \\
+         & IG(D) = H(D) - (\frac{10}{17}H(D_1)+\frac{5}{17}H(D_2)+\frac{2}{17}H(D_3)) = 0.141
+    \end{align*}
+\end{center}
+\subsubsection*{纹理}
+\begin{center}
+    \begin{align*}
+         & H(D) = -(\frac{8}{17}log\frac{8}{17}+\frac{9}{17}log\frac{9}{17}) = 0.998         \\
+         & H(D_1) = -(\frac{7}{9}log\frac{7}{9}+\frac{2}{9}log\frac{2}{9}) = 0.764           \\
+         & H(D_2) = -(\frac{1}{5}log\frac{1}{5}+\frac{4}{5}log\frac{4}{5}) = 0.722           \\
+         & H(D_3) = -(\frac{0}{3}log\frac{0}{3}+\frac{3}{3}log\frac{3}{3}) = 0.000           \\
+         & IG(D) = H(D) - (\frac{9}{17}H(D_1)+\frac{5}{17}H(D_2)+\frac{3}{17}H(D_3)) = 0.381
+    \end{align*}
+\end{center}
+\subsubsection*{脐部}
+\begin{center}
+    \begin{align*}
+         & H(D) = -(\frac{8}{17}log\frac{8}{17}+\frac{9}{17}log\frac{9}{17}) = 0.998         \\
+         & H(D_1) = -(\frac{5}{7}log\frac{5}{7}+\frac{2}{7}log\frac{2}{7}) = 0.863           \\
+         & H(D_2) = -(\frac{3}{6}log\frac{3}{6}+\frac{3}{6}log\frac{3}{6}) = 1.000           \\
+         & H(D_3) = -(\frac{0}{4}log\frac{0}{4}+\frac{4}{4}log\frac{4}{4}) = 0.000           \\
+         & IG(D) = H(D) - (\frac{7}{17}H(D_1)+\frac{6}{17}H(D_2)+\frac{4}{17}H(D_3)) = 0.290
+    \end{align*}
+\end{center}
+\subsubsection*{触感}
+\begin{center}
+    \begin{align*}
+         & H(D) = -(\frac{8}{17}log\frac{8}{17}+\frac{9}{17}log\frac{9}{17}) = 0.998 \\
+         & H(D_1) = -(\frac{6}{8}log\frac{6}{8}+\frac{2}{8}log\frac{2}{8}) = 0.811   \\
+         & H(D_2) = -(\frac{6}{9}log\frac{6}{9}+\frac{3}{9}log\frac{3}{9}) = 0.918   \\
+         & IG(D) = H(D) - (\frac{8}{17}H(D_1)+\frac{9}{17}H(D_2)) = 0.130
+    \end{align*}
+\end{center}
+\subsection*{(2)使用ID3算法建立决策树}
+由(1)得第一次选择时增益最大的属性为纹理，之后的每次选择与(1)同理，
+计算每个属性的信息增益并选择信息增益最大的属性，若有多个最大增益则选择排序靠前的\\
+建立的决策树如下
+\begin{center}
+    \begin{forest}
+        for tree={edge=->}
+        [
+        [\textit{纹理}
+        [清晰
+        [\textit{根蒂}
+        [蜷缩
+            [好瓜(5)]
+        ]
+        [稍蜷
+            [
+                \textit{色泽}
+                [
+                    青绿
+                    [好瓜(1)]
+                ]
+                [
+                    乌黑
+                    [
+                        \textit{触感}
+                        [
+                            硬滑
+                            [好瓜(1)]
+                        ]
+                        [
+                            软粘
+                            [坏瓜(1)]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+        [硬挺
+            [坏瓜(1)]
+        ]
+        ]
+        ]
+        [稍糊
+        [\textit{触感}
+            [
+                软粘
+                [好瓜(1)]
+            ]
+            [
+                硬滑
+                [坏瓜(4)]
+            ]
+        ]
+        ]
+        [模糊
+        [坏瓜(3)]
+        ]
+        ]
+        ]
+    \end{forest}
+\end{center}
+决策树中斜体字表示属性，叶节点后数字表示该叶节点代表的样本数量，总和为17
+\subsection*{(3)两棵决策树的决策面}
+\subsubsection*{决策树1}
+\begin{figure}[H]
+    \centering
+    \includegraphics*[scale = 0.15]{square01.jpg}
+\end{figure}
+\subsubsection*{决策树2}
+\begin{figure}[H]
+    \centering
+    \includegraphics*[scale = 0.15]{square02.jpg}
+\end{figure}
+\section{第四题}
+\subsection*{(1)}
+首先计算$\ell$对推理结果向量$\vec{o}$逐元素的导数
+\begin{align*}
+    \frac{\partial \ell}{\partial o_k} = \frac{\partial (\sum_{j = 1}^{K}(-y_ilog\hat{y_j}))}{\partial o_k}
+\end{align*}
+由链式法则得到
+\begin{align*}
+      & \frac{\partial (\sum_{j = 1}^{K}(-y_jlog\hat{y_j}))}{\partial o_k}                                                    \\
+    = & \frac{\partial (\sum_{j = 1}^{K}(-y_jlog\hat{y_j}))}{\partial \hat{y_j}}\cdot \frac{\partial \hat{y_j}}{\partial o_k} \\
+    = & -\sum_{j = 1}^{K}\frac{y_j}{\hat{y_j}}\cdot \frac{\partial \hat{y_j}}{\partial o_k}                                   \\
+\end{align*}
+当j = k时\\
+\begin{align*}
+      & \frac{\partial \hat{y_j}}{\partial o_k}                             \\
+    = & \frac{\partial \hat{y_k}}{\partial o_k}                             \\
+    = & \frac{\partial (\frac{e^{o_k}}{e^{o_1}+...+e^{o_K}})}{\partial o_k} \\
+    = & \hat{y_k}\cdot (1-\hat{y_k})
+\end{align*}
+当j != k时\\
+\begin{align*}
+      & \frac{\partial \hat{y_j}}{\partial o_k}                             \\
+    = & \frac{\partial (\frac{e^{o_j}}{e^{o_1}+...+e^{o_K}})}{\partial o_k} \\
+    = & -\hat{y_j}\cdot\hat{y_k}
+\end{align*}
+所以原式
+\begin{align*}
+    = & -\sum_{j = 1}^{K}\frac{y_j}{\hat{y_j}}\cdot \frac{\partial \hat{y_j}}{\partial o_k}                                                                    \\
+    = & -\frac{y_k}{\hat{y_k}}\cdot\frac{\partial \hat{y_k}}{\partial o_k}-\sum_{j != k}^{K}\frac{y_j}{\hat{y_j}}\cdot \frac{\partial \hat{y_j}}{\partial o_k} \\
+    = & -y_k\cdot(1-\hat{y_k})+\sum_{j != k}^{K}{y_j}\cdot \hat{y_k}                                                                                           \\
+    = & -y_k+\sum_{j = 1}^{K}{y_j}\cdot \hat{y_k}                                                                                                              \\
+\end{align*}
+因为$y_k = 1, y_j = 0,\forall y\neq k$\\
+所以$\sum_{j = 1}^{K}{y_j} = 1$
+\begin{align*}
+    \frac{\partial \ell}{\partial o_k} = \hat{y_k} - y_k
+\end{align*}
+故
+\begin{align*}
+    \frac{\partial \ell}{\partial \vec{o}} =
+    \begin{bmatrix}
+        \frac{\partial \ell}{\partial o_1} \\
+        \frac{\partial \ell}{\partial o_2} \\
+        \vdots                             \\
+        \frac{\partial \ell}{\partial o_K} \\
+    \end{bmatrix} =
+    \begin{bmatrix}
+        \hat{y_1} - y_1 \\
+        \hat{y_2} - y_2 \\
+        \vdots          \\
+        \hat{y_K} - y_K \\
+    \end{bmatrix}
+\end{align*}
+\subsection*{(2)}
+根据链式法则和矩阵求导术
+\begin{align*}
+      & \frac{\partial \ell}{\partial W}                                                     \\
+    = & \frac{\partial \ell}{\partial \vec{o}}\cdot \frac{\partial \vec{o}}{\partial W}      \\
+    = & \frac{\partial \ell}{\partial \vec{o}}\cdot \frac{\partial (W^T\vec{x})}{\partial W} \\
+    = & x\cdot (\frac{\partial \ell}{\partial \vec{o}})^T                                    \\
+    = &
+    \begin{bmatrix}
+        x_1\cdot (\hat{y_1} - y_1) & ... & x_1\cdot (\hat{y_K} - y_K) \\
+        x_2\cdot (\hat{y_1} - y_1) & ... & x_2\cdot (\hat{y_K} - y_K) \\
+        \vdots                                                        \\
+        x_D\cdot (\hat{y_1} - y_1) & ... & x_D\cdot (\hat{y_K} - y_K) \\
+    \end{bmatrix}
+\end{align*}
+\begin{align*}
+      & \frac{\partial \ell}{\partial \vec{x}}                                                     \\
+    = & \frac{\partial \ell}{\partial \vec{o}}\cdot \frac{\partial \vec{o}}{\partial \vec{x}}      \\
+    = & \frac{\partial \ell}{\partial \vec{o}}\cdot \frac{\partial (W^T\vec{x})}{\partial \vec{x}} \\
+    = & W \cdot \frac{\partial \ell}{\partial \vec{o}}                                             \\
+    = &
+    \begin{bmatrix}
+        w_{11}\cdot (\hat{y_1} - y_1) + ... + w_{1K}\cdot (\hat{y_K} - y_K) \\
+        w_{21}\cdot (\hat{y_1} - y_1) + ... + w_{2K}\cdot (\hat{y_K} - y_K) \\
+        \vdots                                                              \\
+        w_{D1}\cdot (\hat{y_1} - y_1) + ... + w_{DK}\cdot (\hat{y_K} - y_K) \\
+    \end{bmatrix}
+\end{align*}
+\subsection*{(3)}
+首先求$\frac{\partial \ell}{\partial \vec{z}}$\\
+由链式法则及已知得
+\begin{align*}
+      & \frac{\partial \ell}{\partial \vec{z}}                                                                                                 \\
+    = & \frac{\partial \ell}{\partial \vec{o}} \cdot \frac{\partial \vec{o}}{\partial \vec{h}} \cdot \frac{\partial \vec{h}}{\partial \vec{z}} \\
+    = & W_2\cdot\frac{\partial \ell}{\partial \vec{o}}\cdot \frac{\partial \sigma(z) }{\partial z}                                             \\
+    = & W_2\cdot\frac{\partial \ell}{\partial \vec{o}}\cdot (\sigma(z)\cdot(1-\sigma(z)))                                                      \\
+\end{align*}
+然后求$\frac{\partial \ell}{\partial W_1}$\\
+\begin{align*}
+      & \frac{\partial \ell}{\partial W_1}                                                                 \\
+    = & \frac{\partial \ell}{\partial \vec{z}} \cdot \frac{\partial \vec{z}}{\partial W_1}                 \\
+    = & \vec{x}\cdot (W_2\cdot\frac{\partial \ell}{\partial \vec{o}})^T\cdot (\sigma(z)\cdot(1-\sigma(z)))
+\end{align*}
+\subsection*{(4)}
+经过调参，选择学习率 = 0.2，
+网络的训练集、验证集和测试集的准确率如下
+\begin{figure}[H]
+    \centering
+    \includegraphics*{accuracy.jpg}
+\end{figure}
+\begin{table}[H]
+    \centering
+    \caption{Accuracy on Training, Validation, and Test Sets}
+    \rotatebox{0}
+    {
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \multirow{2}{*}{Dataset} & \multicolumn{1}{c|}{Training Set} & \multicolumn{1}{c|}{Validation Set} & \multicolumn{1}{c|}{Test Set} \\ \cline{2-4}
+                                     & Accuracy (\%)                     & Accuracy (\%)                       & Accuracy (\%)                 \\ \hline
+            mlp                      & 99.82                             & 95.7                                & 94.98                         \\ \hline
+        \end{tabular}
+    }
+\end{table}
+损失函数的训练曲线如下
+\begin{figure}[H]
+    \centering
+    \includegraphics*{train_curve.jpg}
+\end{figure}
+\end{document}
