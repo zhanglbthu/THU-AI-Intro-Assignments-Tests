@@ -1,0 +1,58 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=1in]{geometry} % 设置页面边距
+\usepackage{ctex}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amssymb} % 数学符号
+\usepackage{booktabs} % 绘制漂亮的表格
+\usepackage{array} % 数组和表格
+\usepackage{multirow} % 多行合并的表格
+\usepackage{caption} % 设置图片和表格的标题格式
+\usepackage{subcaption} % 多个子图或表格
+\usepackage{parskip}
+\setlength{\parindent}{0pt}
+
+\title{\textbf{搜索实践实验报告}}
+\author{张立博\ 未央-能动11\ 2021012487}
+\date{2023.4.1}
+
+\begin{document}
+
+\maketitle
+
+\section*{问题一}
+以下根据棋盘的大小简要描述AI的表现
+\subsection{$3\times 3$}
+无论AI先后手，都可以找到不输的策略，但较大概率发生平局
+\subsection{$3\times 4$}
+若AI先手则必胜
+\subsection{$9\times 9$}
+\subsubsection*{截断搜索+评估函数}
+依据评估函数AI已具有一定的棋力，经测试与一般人类对弈AI无论先后手均具有一定胜率
+\subsubsection*{朴素MCST}
+行棋较慢且落子位置分散，不能展现出很强的棋力
+\subsubsection*{AlphaZero}
+引入评估函数后AI具有一定的棋力，但相较于使用截断搜索的AI行棋速度较慢
+
+\section*{问题二}
+朴素minimax几乎无法落子，经测试在15min内无法给出第一步,遂终止\\
+alpha-beta行棋速度显著快于朴素minimax，第一步落子约需要3s，后续落子速度更快，能在0.5s内进行落子
+\section*{问题三}
+对于每一个玩家，分别记录其活四、冲四、活三、冲三、活二的数量以及最远棋子距离棋盘中心的相对距离\\
+然后玩家的属性进行权值估计，同时需要除以常数并更新分数，保证得分在$[-1,1]$中\\
+根据先验知识，权值活四>冲四>活三>距离>冲三>活二；同时由于敌方的冲四可以进行防守，所以敌方冲四的权值显著低于己方冲四的权值\\
+具体地，若玩家为智能体：
+\begin{align*}
+    score += (40000*live\_four + 5000*four + 1000*live\_three + 100 * three + 50 *live\_two - 500 * distance)/50000
+\end{align*}
+若玩家为对手：
+\begin{align*}
+    score -= (40000*live\_four + 100*four + 1000*live\_three + 100 * three + 50 *live\_two - 500 * distance)/50000
+\end{align*}
+\section*{问题四}
+对战结果：alpha-beta完全胜于MCTS\\
+原因分析：alpha-beta在探索一层后采用根据先验知识设计的评估函数返回最佳的行动，而MCTS在进行模拟时采用完全随机的方式且模拟测试数量有限，无法得到合理的行棋策略，效果较差
+\section*{问题五}
+AlphaZero相较于MCTS行棋更合理，通过二者对局发现前者棋力明显大于后者，这是因为在模拟中AlphaZero采用评估函数的方式代替了随机游戏
+\end{document}
